@@ -1,38 +1,34 @@
-# Nest.js SaaS Complete Project Pack
+# Enterprise Multi-Tenant Project Management API
 
-This pack contains the documentation and Codex prompt sequence for building the first portfolio application:
+A production-grade NestJS backend for multi-tenant project management. The application is being implemented incrementally from the specifications in [`docs/`](docs/).
 
-**Enterprise Multi-Tenant Project Management API**
+## Current Status
 
-## Structure
+Phase 1 provides the NestJS foundation, validated configuration, structured logging, throttling, Swagger, global response/error handling, and a health endpoint.
 
-```txt
-AGENTS.md
-docs/
-  00-project-overview.md
-  01-product-requirements-document.md
-  02-architecture-document.md
-  03-database-design.md
-  04-api-specification.md
-  05-auth-rbac-security.md
-  06-multi-tenancy-strategy.md
-  07-background-jobs.md
-  08-error-handling-logging.md
-  09-testing-strategy.md
-  10-deployment-railway.md
-  11-codex-build-plan.md
-  12-github-readme.md
-  13-portfolio-case-study.md
+## Local Setup
 
-prompts/
-  codex-prompt-sequence.md
+```bash
+cp .env.example .env
+docker compose up -d
+npm install
+npm run start:dev
 ```
 
-## Recommended Usage
+Available endpoints:
 
-1. Create a new GitHub repository.
-2. Copy `AGENTS.md` to the project root.
-3. Copy the `docs/` folder to the project root.
-4. Open `prompts/codex-prompt-sequence.md`.
-5. Paste prompts into Codex one phase at a time.
-6. After each phase, run build/tests and commit before continuing.
+- Health: `http://localhost:3000/api/v1/health`
+- Swagger: `http://localhost:3000/api/docs`
+
+Mailpit's local inbox is available at `http://localhost:8025`.
+
+## Verification
+
+```bash
+npm run lint
+npm run test
+npm run test:e2e
+npm run build
+```
+
+See [`docs/14-development-plan.md`](docs/14-development-plan.md) for the agreed implementation plan.
