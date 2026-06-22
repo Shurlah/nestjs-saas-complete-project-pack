@@ -59,6 +59,8 @@ Status: authentication and user APIs, session rotation/reuse detection, audit pe
 - Implement JWT, active-membership, roles, and project-access guards.
 - Protect owner invariants and make multi-step operations transactional.
 
+Status: organization, membership, and invitation APIs are implemented with active-membership and role guards, project-access guard infrastructure, owner protections, transactional audit/activity writes, encrypted invitation outbox payloads, and cross-tenant authorization tests. Explicit ownership transfer remains intentionally unsupported.
+
 ### 5. Project-Management Modules
 
 - Implement teams and team membership.

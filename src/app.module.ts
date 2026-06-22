@@ -11,6 +11,9 @@ import { HealthModule } from './modules/health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
+import { OrganizationsModule } from './modules/organizations/organizations.module';
+import { MembershipsModule } from './modules/memberships/memberships.module';
+import { InvitationsModule } from './modules/invitations/invitations.module';
 
 @Module({
   imports: [
@@ -57,6 +60,9 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     DatabaseModule,
     AuthModule,
     UsersModule,
+    OrganizationsModule,
+    MembershipsModule,
+    InvitationsModule,
     HealthModule,
   ],
   providers: [

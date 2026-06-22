@@ -4,7 +4,7 @@ A production-grade NestJS backend for multi-tenant project management. The appli
 
 ## Current Status
 
-Phases 1–3 provide the NestJS foundation, PostgreSQL/Prisma persistence, JWT authentication with refresh-session rotation, account recovery and verification flows, current-user profile operations, security audit records, and transactional email outbox events.
+Phases 1–4 provide the NestJS foundation, PostgreSQL/Prisma persistence, JWT authentication with refresh-session rotation, account recovery and verification flows, organization and membership management, invitation acceptance, tenant isolation, RBAC guards, security audit records, and transactional email outbox events.
 
 ## Local Setup
 
@@ -23,6 +23,8 @@ Available endpoints:
 - Swagger: `http://localhost:3000/api/docs`
 
 Authentication endpoints are under `/api/v1/auth`; current-user endpoints are under `/api/v1/users/me`. Swagger documents request schemas and bearer authentication.
+
+Tenant-root endpoints are under `/api/v1/organizations`. Creating an organization atomically assigns the current user its `OWNER` membership; organization invitations are accepted through `/api/v1/invitations/accept`.
 
 Use independent values for the JWT and `OUTBOX_ENCRYPTION_KEY` secrets. Changing the outbox key before pending account emails are processed makes those encrypted token payloads unreadable.
 
