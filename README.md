@@ -12,6 +12,8 @@ Phase 1 provides the NestJS foundation, validated configuration, structured logg
 cp .env.example .env
 docker compose up -d
 npm install
+npm run prisma:migrate:dev -- --name init
+npm run prisma:seed
 npm run start:dev
 ```
 
@@ -21,6 +23,8 @@ Available endpoints:
 - Swagger: `http://localhost:3000/api/docs`
 
 Mailpit's local inbox is available at `http://localhost:8025`.
+
+The seed creates five users covering every organization role. Their shared local-development password is `Password@123`.
 
 ## Verification
 

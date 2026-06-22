@@ -253,7 +253,7 @@ Implement current user profile endpoints.
 4. Implement GET /users/me.
 5. Implement PATCH /users/me.
 6. Implement PATCH /users/me/password.
-7. Ensure passwordHash and refreshTokenHash are never returned.
+7. Ensure password hashes and refresh-session token hashes are never returned.
 8. Add tests.
 ```
 

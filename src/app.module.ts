@@ -6,6 +6,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { randomUUID } from 'node:crypto';
 import { IncomingMessage, ServerResponse } from 'node:http';
 import { validateEnvironment } from './config/env.validation';
+import { DatabaseModule } from './database/database.module';
 import { HealthModule } from './modules/health/health.module';
 
 @Module({
@@ -50,6 +51,7 @@ import { HealthModule } from './modules/health/health.module';
         },
       },
     }),
+    DatabaseModule,
     HealthModule,
   ],
   providers: [

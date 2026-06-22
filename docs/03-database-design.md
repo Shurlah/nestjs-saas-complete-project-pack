@@ -26,7 +26,10 @@ The database must support:
 - Refresh tokens
 - Password reset tokens
 - Email verification tokens
-- File attachment metadata
+- Multi-device refresh sessions
+- Transactional outbox events
+
+File attachments, task labels, and subtasks are deferred from the core V1 migration. Their draft models remain documented below for future implementation but are not present in the initial Prisma schema.
 
 The database must enforce strong tenant isolation by ensuring organization-owned resources include `organizationId`.
 
@@ -214,7 +217,6 @@ model User {
   passwordHash           String
   status                 UserStatus    @default(ACTIVE)
   isEmailVerified        Boolean       @default(false)
-  refreshTokenHash       String?
   lastLoginAt            DateTime?
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
@@ -233,6 +235,7 @@ model User {
   activityLogs           ActivityLog[]  @relation("ActivityActor")
   passwordResetTokens    PasswordResetToken[]
   emailVerificationTokens EmailVerificationToken[]
+  refreshSessions        RefreshSession[]
 }
 ```
 
@@ -268,7 +271,7 @@ model Organization {
   notifications  Notification[]
   auditLogs      AuditLog[]
   activityLogs   ActivityLog[]
-  files          FileAttachment[]
+  outboxEvents   OutboxEvent[]
 
   @@index([ownerId])
   @@index([slug])
@@ -422,7 +425,6 @@ model Task {
   id             String       @id @default(uuid())
   organizationId String
   projectId      String
-  parentTaskId   String?
   title          String
   description    String?
   status         TaskStatus   @default(TODO)
@@ -437,12 +439,9 @@ model Task {
 
   organization   Organization @relation(fields: [organizationId], references: [id])
   project        Project      @relation(fields: [projectId], references: [id])
-  parentTask     Task?        @relation("Subtasks", fields: [parentTaskId], references: [id])
-  subtasks       Task[]       @relation("Subtasks")
   assignee       User?        @relation("TaskAssignee", fields: [assigneeId], references: [id])
   createdBy      User         @relation("TaskCreator", fields: [createdById], references: [id])
   comments       Comment[]
-  labels         TaskLabelOnTask[]
 
   @@index([organizationId])
   @@index([projectId])
@@ -463,7 +462,7 @@ Rules:
 
 ---
 
-## 6.9 TaskLabel
+## 6.9 TaskLabel (Deferred)
 
 Represents reusable task labels inside an organization.
 
@@ -485,7 +484,7 @@ model TaskLabel {
 
 ---
 
-## 6.10 TaskLabelOnTask
+## 6.10 TaskLabelOnTask (Deferred)
 
 Join table for tasks and labels.
 
@@ -654,7 +653,7 @@ model AuditLog {
 
 ---
 
-## 6.16 FileAttachment
+## 6.16 FileAttachment (Deferred)
 
 Stores metadata for uploaded files.
 
@@ -731,13 +730,63 @@ model EmailVerificationToken {
 
 ---
 
+## 6.19 RefreshSession
+
+Stores one hashed rotating refresh token per client session. Session families support concurrent devices, targeted logout, and reuse detection.
+
+Key fields:
+
+```txt
+userId
+familyId
+tokenHash
+expiresAt
+lastUsedAt
+revokedAt
+replacedBySessionId
+ipAddress
+userAgent
+createdAt
+updatedAt
+```
+
+The token hash is unique and raw refresh tokens are never persisted.
+
+---
+
+## 6.20 OutboxEvent
+
+Stores domain events in the same transaction as business changes before an idempotent relay publishes them to BullMQ.
+
+Key fields:
+
+```txt
+organizationId
+topic
+eventType
+aggregateType
+aggregateId
+payload
+status
+attempts
+availableAt
+lockedAt
+processedAt
+lastError
+createdAt
+updatedAt
+```
+
+Workers claim pending events using `status` and `availableAt`; event IDs provide the downstream idempotency key.
+
+---
+
 ## 7. Relationship Summary
 
 ```txt
 User
   has many Memberships
-  has many assigned Tasks
-  has many Comments
+  has many RefreshSessions
   has many Notifications
 
 Organization
@@ -758,9 +807,9 @@ Project
 Task
   belongs to Organization
   belongs to Project
-  optionally belongs to Assignee
+  optionally belongs to an Assignee Membership
+  belongs to a Creator Membership
   has many Comments
-  can have many Subtasks
 
 Comment
   belongs to Task
@@ -768,7 +817,10 @@ Comment
 
 Invitation
   belongs to Organization
-  belongs to Inviter
+  belongs to an Inviter Membership
+
+OutboxEvent
+  optionally belongs to Organization
 ```
 
 ---

@@ -133,14 +133,16 @@ Rules:
 - Store only a hash of the refresh token in the database.
 - Rotate refresh token on every refresh.
 - Invalidate the old refresh token after use.
-- Clear refresh token hash on logout.
+- Revoke the active refresh session on logout.
 - Reject reuse of old refresh tokens.
 
-Database field:
+Database model:
 
 ```txt
-User.refreshTokenHash
+RefreshSession.tokenHash
 ```
+
+Each client session has its own token family. Reuse of a rotated token revokes the entire family without invalidating unrelated devices.
 
 ---
 
@@ -175,7 +177,7 @@ Steps:
 7. Queue email verification job.
 8. Generate access token.
 9. Generate refresh token.
-10. Hash refresh token and store it.
+10. Hash the refresh token and create a refresh session.
 11. Create audit log.
 12. Return user and tokens.
 ```
@@ -226,12 +228,13 @@ Steps:
 1. Validate refresh token payload.
 2. Confirm token type is refresh.
 3. Find user.
-4. Compare raw refresh token with stored refresh token hash.
+4. Load the active refresh session and compare the raw token with its stored hash.
 5. If invalid, reject request.
 6. Generate new access token.
 7. Generate new refresh token.
-8. Hash new refresh token and replace old hash.
-9. Return new tokens.
+8. Hash the new refresh token and create the replacement session in the same family.
+9. Revoke the previous session and link it to its replacement atomically.
+10. Return new tokens.
 ```
 
 Security rule:
@@ -246,7 +249,7 @@ Steps:
 
 ```txt
 1. Authenticate user.
-2. Clear refreshTokenHash for user.
+2. Revoke the current refresh session, or all sessions when explicitly requested.
 3. Create audit log.
 4. Return success.
 ```
@@ -289,7 +292,7 @@ Steps:
 6. Hash new password.
 7. Update user password hash.
 8. Mark token as used.
-9. Clear refreshTokenHash to log out old sessions.
+9. Revoke all refresh sessions to log out old clients.
 10. Create audit log.
 11. Return success.
 ```
@@ -584,7 +587,7 @@ Never return:
 
 ```txt
 passwordHash
-refreshTokenHash
+refresh session token hashes
 tokenHash
 internal stack trace
 database error object
