@@ -12,6 +12,7 @@ const environmentSchema = z.object({
     .enum(['development', 'test', 'production'])
     .default('development'),
   PORT: z.coerce.number().int().positive().max(65_535).default(3000),
+  OUTBOX_ENCRYPTION_KEY: z.string().min(32),
   REDIS_URL: z.string().min(1),
   SMTP_FROM: z.email().default('no-reply@example.com'),
   SMTP_HOST: z.string().min(1).default('localhost'),

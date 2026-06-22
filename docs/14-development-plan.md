@@ -51,6 +51,8 @@ Deferred from core V1: file endpoints, task labels, subtasks, comment mentions, 
 - Normalize emails, invalidate older reset and verification tokens when replacements are issued, redact secrets, and record security audit events.
 - Queue email through outbox events and SMTP workers.
 
+Status: authentication and user APIs, session rotation/reuse detection, audit persistence, and email outbox event production are implemented. The outbox relay and SMTP worker remain in Phase 6 with the other background processors.
+
 ### 4. Tenant Root and Authorization
 
 - Implement organizations, memberships, invitations, owner membership creation, role changes, removals, and archival.

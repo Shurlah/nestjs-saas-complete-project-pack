@@ -4,6 +4,7 @@ const validEnvironment = {
   DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/nest_saas',
   JWT_ACCESS_SECRET: 'a'.repeat(32),
   JWT_REFRESH_SECRET: 'b'.repeat(32),
+  OUTBOX_ENCRYPTION_KEY: 'c'.repeat(32),
   REDIS_URL: 'redis://localhost:6379',
 };
 

@@ -8,6 +8,9 @@ import { IncomingMessage, ServerResponse } from 'node:http';
 import { validateEnvironment } from './config/env.validation';
 import { DatabaseModule } from './database/database.module';
 import { HealthModule } from './modules/health/health.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -52,12 +55,18 @@ import { HealthModule } from './modules/health/health.module';
       },
     }),
     DatabaseModule,
+    AuthModule,
+    UsersModule,
     HealthModule,
   ],
   providers: [
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
     },
   ],
 })

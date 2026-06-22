@@ -746,6 +746,7 @@ DATABASE_URL
 REDIS_URL
 JWT_ACCESS_SECRET
 JWT_REFRESH_SECRET
+OUTBOX_ENCRYPTION_KEY
 JWT_ACCESS_EXPIRES_IN
 JWT_REFRESH_EXPIRES_IN
 NODE_ENV
@@ -809,14 +810,14 @@ Critical test areas:
 
 Important architectural decisions:
 
-| Decision | Choice | Reason |
-|---|---|---|
-| Application style | Modular monolith | Best balance of simplicity and scalability for v1 |
-| Database | PostgreSQL | Strong relational modeling and production reliability |
-| ORM | Prisma | Type-safe database access and good TypeScript developer experience |
-| Queue | BullMQ | Strong Redis-backed job queue for Node.js |
-| Cache/Queue backend | Redis | Required for BullMQ and useful for rate limiting |
-| Deployment | Railway | Simple deployment with managed PostgreSQL and Redis |
-| Auth | JWT + refresh tokens | Common production API authentication model |
-| Authorization | RBAC + tenant checks | Required for multi-tenant SaaS security |
-| Multi-tenancy | Shared DB, tenant-scoped rows | Practical and simple for v1 |
+| Decision            | Choice                        | Reason                                                             |
+| ------------------- | ----------------------------- | ------------------------------------------------------------------ |
+| Application style   | Modular monolith              | Best balance of simplicity and scalability for v1                  |
+| Database            | PostgreSQL                    | Strong relational modeling and production reliability              |
+| ORM                 | Prisma                        | Type-safe database access and good TypeScript developer experience |
+| Queue               | BullMQ                        | Strong Redis-backed job queue for Node.js                          |
+| Cache/Queue backend | Redis                         | Required for BullMQ and useful for rate limiting                   |
+| Deployment          | Railway                       | Simple deployment with managed PostgreSQL and Redis                |
+| Auth                | JWT + refresh tokens          | Common production API authentication model                         |
+| Authorization       | RBAC + tenant checks          | Required for multi-tenant SaaS security                            |
+| Multi-tenancy       | Shared DB, tenant-scoped rows | Practical and simple for v1                                        |

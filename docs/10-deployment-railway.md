@@ -51,6 +51,7 @@ REDIS_URL=${{Redis.REDIS_URL}}
 
 JWT_ACCESS_SECRET=replace-with-secure-value
 JWT_REFRESH_SECRET=replace-with-secure-value
+OUTBOX_ENCRYPTION_KEY=replace-with-an-independent-secure-value
 JWT_ACCESS_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_IN=7d
 
@@ -83,6 +84,7 @@ REDIS_URL=redis://localhost:6379
 
 JWT_ACCESS_SECRET=local-access-secret-change-me
 JWT_REFRESH_SECRET=local-refresh-secret-change-me
+OUTBOX_ENCRYPTION_KEY=local-outbox-secret-change-me
 JWT_ACCESS_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_IN=7d
 
@@ -281,7 +283,7 @@ services:
     image: postgres:16
     container_name: nest_saas_postgres
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -293,7 +295,7 @@ services:
     image: redis:7
     container_name: nest_saas_redis
     ports:
-      - "6379:6379"
+      - '6379:6379'
 
 volumes:
   postgres_data:

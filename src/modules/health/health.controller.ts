@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { ResponsePayload } from '../../common/interceptors/response.interceptor';
+import { Public } from '../../common/decorators/public.decorator';
 
 interface HealthData {
   status: 'ok';
@@ -9,6 +10,7 @@ interface HealthData {
 
 @ApiTags('health')
 @Controller('health')
+@Public()
 export class HealthController {
   @Get()
   @ApiOperation({ summary: 'Check API liveness' })
